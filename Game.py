@@ -42,6 +42,13 @@ selected_option = 0
 money = 9999
 XP = 9999
 
+#Debo crear la clase raza esta debe tener atributos como, nombre (de la raza), descripcion, imagen, HP, daño de ataque, velocidad
+# Y NO SÉ COMO BUSCO TUTORIAL NO HAY NADA AYUDA!!!!
+
+
+
+
+
 # Musica: https://www.youtube.com/watch?v=0ktyag1l3y8
 # Musica : https://www.youtube.com/watch?v=QVfoZQ-0A1M
 # Buscar como descargar musica de yotube quizas haga un porgrama que lo haga
