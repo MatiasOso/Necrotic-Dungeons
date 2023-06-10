@@ -1,5 +1,9 @@
 import pygame
 import sys
+import tkinter as tk
+from register.py import *
+
+
 
 # Inicializar Pygame
 pygame.init()
@@ -37,15 +41,13 @@ font = pygame.font.Font(font_path, font_size)
 # Definir opciones del menú principal
 menu_options = ["Iniciar sesion", "Registrarse", "Salir"]
 selected_option = 0
-
+ #Nickname,correo,contraseña, confirmar contraseña
 # dinero y experiencia
 money = 9999
 XP = 9999
 
 #Debo crear la clase raza esta debe tener atributos como, nombre (de la raza), descripcion, imagen, HP, daño de ataque, velocidad
 # Y NO SÉ COMO BUSCO TUTORIAL NO HAY NADA AYUDA!!!!
-
-
 
 
 
@@ -72,9 +74,9 @@ while running:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             if not register:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected_option = (selected_option - 1) % len(menu_options)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected_option = (selected_option + 1) % len(menu_options)
                 elif event.key == pygame.K_RETURN:
                     if selected_option == 0:
@@ -89,9 +91,9 @@ while running:
                         running = False
                         sys.exit()
             else:
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected_option = (selected_option - 1) % 2   #(registrarse y salir)
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected_option = (selected_option + 1) % 2 
                 elif event.key == pygame.K_RETURN:
                     if selected_option == 0:
