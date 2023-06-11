@@ -1,7 +1,26 @@
 import pygame
 import sys
 import tkinter as tk
-from register.py import *
+
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+import tkinter as tk
+
+uri = "mongodb+srv://matiasosores:XJLMzLTVcFYc7iCt@tienda.ietwuqs.mongodb.net/?retryWrites=true&w=majority"
+
+# Create a new client and connect to the server
+def conexion():
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    # Send a ping to confirm a successful connection
+    try:
+        client.admin.command('ping')
+        print("Conexión exitosa")
+        db = client.test
+        return db
+    except Exception as e:
+        print(e)
+
+db = conexion()
 
 
 
@@ -49,7 +68,70 @@ XP = 9999
 #Debo crear la clase raza esta debe tener atributos como, nombre (de la raza), descripcion, imagen, HP, daño de ataque, velocidad
 # Y NO SÉ COMO BUSCO TUTORIAL NO HAY NADA AYUDA!!!!
 
+def iniciar_sesion():
+    # Función para guardar los datos en la base de datos
+    def check_datos():
+        global label5  # Declarar label5 como variable global
+        Nickname = entry1.get()
+        Contraseña = entry2.get()
 
+        documentos = {
+            "Nickname": Nickname,
+            "Contraseña": Contraseña,
+        }
+        login = False
+        if db.Usuarios.find_one(documentos):
+            print("Inicio de sesión exitoso")
+            label5 = tk.Label(ventana, text="Inicio de sesión exitoso")
+            label5.grid(row=5, column=1)
+            boton.config(state=tk.DISABLED)
+            ventana.after(1000, ocultar_mensaje)
+            ventana.after(2000, ventana.destroy)
+            # validar el login
+            login = True
+            return login
+            
+
+
+
+
+
+        
+        
+        else:
+            print("Inicio de sesión fallido")
+            label5 = tk.Label(ventana, text="Error de contraseña o usuario")
+            label5.grid(row=5, column=1)
+            boton.config(state=tk.DISABLED)
+            ventana.after(1000, ocultar_mensaje)
+            ventana.after(2000, ventana.destroy)
+
+
+    # Función para ocultar el mensaje
+    def ocultar_mensaje():
+        label5.grid_remove()
+
+    # Crear una ventana
+    ventana = tk.Tk()
+    ventana.title("Iniciar sesión")
+    ventana.geometry("400x150")
+
+    # Crear los labels
+    label1 = tk.Label(ventana, text="Nickname")
+    label1.grid(row=0, column=0)
+    label2 = tk.Label(ventana, text="Contraseña")
+    label2.grid(row=1, column=0)
+
+    # Crear los entrys
+    entry1 = tk.Entry(ventana)
+    entry1.grid(row=0, column=1)
+    entry2 = tk.Entry(ventana, show="*")
+    entry2.grid(row=1, column=1)
+
+    # Crear el botón de registro
+    boton = tk.Button(ventana, text="Iniciar sesión", command=check_datos)
+    boton.grid(row=4, column=1)
+    ventana.mainloop()
 
 # Musica: https://www.youtube.com/watch?v=0ktyag1l3y8
 # Musica : https://www.youtube.com/watch?v=QVfoZQ-0A1M
@@ -65,6 +147,12 @@ def is_cursor_on_cart():
 # Variable para indicar si se encuentra en el menú de opciones
 register = False
 
+# Funcion para reproducir cambio.wav cada vez que cambie de opción
+def play_change_sound():
+    pygame.mixer.music.load("cambio.wav")
+    pygame.mixer.music.play(0)
+
+
 # Bucle principal del juego
 running = True
 while running:
@@ -76,11 +164,13 @@ while running:
             if not register:
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected_option = (selected_option - 1) % len(menu_options)
+                    play_change_sound()
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected_option = (selected_option + 1) % len(menu_options)
+                    play_change_sound()
                 elif event.key == pygame.K_RETURN:
                     if selected_option == 0:
-                        # Acción para la opción "Jugar"
+                        iniciar_sesion()
                         print("¡Iniciar sesion!")
                     elif selected_option == 1:
                         # Abrir el menú de opciones
@@ -93,11 +183,78 @@ while running:
             else:
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                     selected_option = (selected_option - 1) % 2   #(registrarse y salir)
+                    play_change_sound()
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
                     selected_option = (selected_option + 1) % 2 
+                    play_change_sound()
                 elif event.key == pygame.K_RETURN:
                     if selected_option == 0:
-                        # Acción para la opción "Iniciar sesión"
+                        # Registro pide Nickname, correo, contraseña, confirmar contraseña
+                        def registro():
+                            # Función para guardar los datos en la base de datos
+                            def guardar_datos():
+                                global label5  # Declarar label5 como variable global
+                                nickname = entry1.get()
+                                correo = entry2.get()
+                                contraseña = entry3.get()
+                                confirmar_contraseña = entry4.get()
+
+                                if contraseña == confirmar_contraseña:
+                                    documentos = {
+                                        "Nickname": nickname,
+                                        "Correo": correo,
+                                        "Contraseña": contraseña,
+                                        "Confirmar contraseña": confirmar_contraseña,
+                                        "es_gm": False
+                                    }
+                                    db.Usuarios.insert_one(documentos)
+                                    label5 = tk.Label(ventana, text="Registro exitoso")
+                                    label5.grid(row=5, column=1)
+                                    boton.config(state=tk.DISABLED)
+                                    ventana.after(1000, ocultar_mensaje)
+                                    ventana.after(2000, ventana.destroy)  
+
+                                else:
+                                    print("Las contraseñas no coinciden")
+                                    label5 = tk.Label(ventana, text="Las contraseñas no coinciden")
+                                    label5.grid(row=5, column=1)
+                                    ventana.after(1000, ocultar_mensaje)  
+
+                            # Función para ocultar el mensaje
+                            def ocultar_mensaje():
+                                label5.grid_remove()
+
+                            # Crear una ventana
+                            ventana = tk.Tk()
+                            ventana.title("Registro")
+                            ventana.geometry("400x200")
+
+                            # Crear los labels
+                            label1 = tk.Label(ventana, text="Nickname")
+                            label1.grid(row=0, column=0)
+                            label2 = tk.Label(ventana, text="Correo")
+                            label2.grid(row=1, column=0)
+                            label3 = tk.Label(ventana, text="Contraseña")
+                            label3.grid(row=2, column=0)
+
+                            # Crear los entrys
+                            entry1 = tk.Entry(ventana)
+                            entry1.grid(row=0, column=1)
+                            entry2 = tk.Entry(ventana)
+                            entry2.grid(row=1, column=1)
+                            entry3 = tk.Entry(ventana, show="*")
+                            entry3.grid(row=2, column=1)
+                            entry4 = tk.Entry(ventana, show="*")
+                            entry4.grid(row=3, column=1)
+
+                            # Crear el botón de registro
+                            boton = tk.Button(ventana, text="Registrarse", command=guardar_datos)
+                            boton.grid(row=4, column=1)
+
+                            ventana.mainloop()
+
+                        registro()
+
                         print("Registrarse")
                     elif selected_option == 1:
                         # Acción para la opción "Volver"
