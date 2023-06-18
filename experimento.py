@@ -76,9 +76,14 @@ class Guy(Personaje):
         if direccion == "izquierda" and self.x > 0:
             self.x -= self.velocidad_movimiento
             self.direccion = "izquierda"
-        elif direccion == "derecha" and self.x < WIDTH - 64:
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
             self.x += self.velocidad_movimiento
             self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
+
     
 
     def dibujar(self, ventana):
@@ -180,14 +185,17 @@ while True:
         guy.mover("derecha")
         fondo_x -= 5
     if keys[pygame.K_UP]:
-        guy.y -= guy.velocidad_movimiento
+        guy.mover("arriba")
         fondo_y += 5
     if keys[pygame.K_DOWN]:
-        guy.y += guy.velocidad_movimiento
+        guy.mover("abajo")
         fondo_y -= 5
-    if keys[pygame.K_SPACE] and pygame.time.get_ticks() - ultimo_disparo_tiempo >= 500:  # Intervalo mínimo de 500 milisegundos entre disparos
+    if keys[pygame.K_SPACE] and pygame.time.get_ticks() - ultimo_disparo_tiempo >= 500:  # cooldown de 500 milisegundos entre disparos
         guy.disparar(enemigo)
         ultimo_disparo_tiempo = pygame.time.get_ticks()
+    
+        
+
 
 
     # Limitar el movimiento del personaje dentro de la pantalla
@@ -222,6 +230,7 @@ while True:
         for y in range(fondo_y % HEIGHT - HEIGHT, HEIGHT, HEIGHT):
             window.blit(fondo, (x, y))
     tiempo_texto = font.render("Time " + str(tiempo), True, color)
+    
     window.blit(tiempo_texto, (300, 10))
     guy.dibujar(window)
     guy.ver_vida(window)
