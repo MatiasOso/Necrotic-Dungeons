@@ -18,6 +18,9 @@ GOLDEN = (255, 215, 0)
 tiempo = 0
 tiempo_inicio = pygame.time.get_ticks()
 
+# Cooldown del disparo
+ultimo_disparo_tiempo = 0
+
 
 # Clase padre para los personajes
 class Personaje:
@@ -87,7 +90,7 @@ class Guy(Personaje):
 # Subclase para los enemigos
 class Enemigo(Personaje):
     def __init__(self, x, y, imagen, velocidad):
-        super().__init__(salud=50, ataque=5, velocidad_movimiento=velocidad, velocidad_ataque=0.5)
+        super().__init__(salud=300, ataque=5, velocidad_movimiento=velocidad, velocidad_ataque=0.5)
         self.x = x
         self.y = y
         self.imagen = imagen
@@ -182,8 +185,10 @@ while True:
     if keys[pygame.K_DOWN]:
         guy.y += guy.velocidad_movimiento
         fondo_y -= 5
-    if keys[pygame.K_SPACE]:
+    if keys[pygame.K_SPACE] and pygame.time.get_ticks() - ultimo_disparo_tiempo >= 500:  # Intervalo mínimo de 500 milisegundos entre disparos
         guy.disparar(enemigo)
+        ultimo_disparo_tiempo = pygame.time.get_ticks()
+
 
     # Limitar el movimiento del personaje dentro de la pantalla
     guy.x = max(0, min(guy.x, WIDTH - 64))
