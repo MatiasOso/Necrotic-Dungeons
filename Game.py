@@ -5,6 +5,7 @@ import tkinter as tk
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import tkinter as tk
+# Para ejecutar el juego de verdad
 import subprocess
 
 
@@ -154,8 +155,10 @@ def play_change_sound():
     pygame.mixer.music.load("cambio.wav")
     pygame.mixer.music.play(0)
 
-
-# Bucle principal del juego
+# ------------------------------------------------- JUEGO ------------------------------------------------- #
+# ------------------------------------------------- JUEGO ------------------------------------------------- #
+# ------------------------------------------------- JUEGO ------------------------------------------------- #
+# ------------------------------------------------- JUEGO ------------------------------------------------- #
 
 while running:
     for event in pygame.event.get():
@@ -209,12 +212,20 @@ while running:
                                         "Confirmar contraseña": confirmar_contraseña,
                                         "es_gm": False
                                     }
-                                    db.Usuarios.insert_one(documentos)
-                                    label5 = tk.Label(ventana, text="Registro exitoso")
-                                    label5.grid(row=5, column=1)
-                                    boton.config(state=tk.DISABLED)
-                                    ventana.after(1000, ocultar_mensaje)
-                                    ventana.after(2000, ventana.destroy)  
+                                    for documento in db.Usuarios.find():
+                                        if nickname == documento["Nickname"]:
+                                            print("El nickname ya existe")
+                                            label5 = tk.Label(ventana, text="El nickname ya existe")
+                                            label5.grid(row=5, column=1)
+                                            ventana.after(1000, ocultar_mensaje)
+                                            return
+                                        else:
+                                            db.Usuarios.insert_one(documentos)
+                                            label5 = tk.Label(ventana, text="Registro exitoso")
+                                            label5.grid(row=5, column=1)
+                                            boton.config(state=tk.DISABLED)
+                                            ventana.after(1000, ocultar_mensaje)
+                                            ventana.after(2000, ventana.destroy)  
 
                                 else:
                                     print("Las contraseñas no coinciden")
