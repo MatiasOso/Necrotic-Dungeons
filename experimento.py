@@ -19,7 +19,7 @@ tiempo = 0
 tiempo_inicio = pygame.time.get_ticks()
 
 # Cooldown del disparo
-ultimo_disparo_tiempo = 0
+cooldown = 0
 
 
 # Clase padre para los personajes
@@ -156,6 +156,68 @@ font = pygame.font.Font(font_path, font_size)
 
 
 
+class elfo(Personaje):
+    def __init__(self, x, y, imagen_izquierda, imagen_derecha):
+        super().__init__(salud=200, ataque=15, velocidad_movimiento=7, velocidad_ataque=1.5)
+        self.x = x
+        self.y = y
+        self.imagen = ("imagenes/guy.png")
+        self.imagen_izquierda = imagen_izquierda
+        self.imagen_derecha = imagen_derecha
+        self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+class humano(Personaje):
+    def __init__(self, x, y, imagen_izquierda, imagen_derecha):
+        super().__init__(salud=300, ataque=10, velocidad_movimiento=5, velocidad_ataque=1)
+        self.x = x
+        self.y = y
+        self.imagen = ("imagenes/guy.png")
+        self.imagen_izquierda = imagen_izquierda
+        self.imagen_derecha = imagen_derecha
+        self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+class humana(Personaje):
+    def __init__(self, x, y, imagen_izquierda, imagen_derecha):
+        super().__init__(salud=250, ataque=12, velocidad_movimiento=6, velocidad_ataque=1.2)
+        self.x = x
+        self.y = y
+        self.imagen = ("imagenes/guy.png")
+        self.imagen_izquierda = imagen_izquierda
+        self.imagen_derecha = imagen_derecha
+        self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+class ogro(Personaje):
+    def __init__(self, x, y, imagen_izquierda, imagen_derecha):
+        super().__init__(salud=500, ataque=20, velocidad_movimiento=3, velocidad_ataque=1)
+        self.x = x
+        self.y = y
+        self.imagen = ("imagenes/guy.png")
+        self.imagen_izquierda = imagen_izquierda
+        self.imagen_derecha = imagen_derecha
+        self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+class elfosc(Personaje):
+    def __init__(self, x, y, imagen_izquierda, imagen_derecha):
+        super().__init__(salud=180, ataque=18, velocidad_movimiento=8, velocidad_ataque=1.8)
+        self.x = x
+        self.y = y
+        self.imagen = ("imagenes/guy.png")
+        self.imagen_izquierda = imagen_izquierda
+        self.imagen_derecha = imagen_derecha
+        self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+class druida(Personaje):
+    def __init__(self, x, y, imagen_izquierda, imagen_derecha):
+        super().__init__(salud=220, ataque=14, velocidad_movimiento=6, velocidad_ataque=1.2)
+        self.x = x
+        self.y = y
+        
+        self.imagen_izquierda = imagen_izquierda
+        self.imagen_derecha = imagen_derecha
+        self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+
+# array de personajes
+personajes = [elfo, humano, humana, ogro, elfosc, druida]
+
+
+selected = False
+indice_seleccionado = 0
+
 
 # Inicializar la ventana del juego
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -163,9 +225,40 @@ pygame.display.set_caption("Juego")
 
 clock = pygame.time.Clock()
 
-color = WHITE
+enfriamiento = 200
 
+color = WHITE
+last_change = 0  # Variable para almacenar el tiempo del último cambio
 while True:
+    while not selected:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT] and current_time - last_change >= enfriamiento:
+            indice_seleccionado = (indice_seleccionado - 1) % len(personajes)
+            last_change = current_time
+        elif keys[pygame.K_RIGHT] and current_time - last_change >= enfriamiento:
+            indice_seleccionado = (indice_seleccionado + 1) % len(personajes)
+            last_change = current_time
+        elif keys[pygame.K_RETURN]:
+            selected = True
+
+        current_time = pygame.time.get_ticks()
+
+        window.fill(BLACK)
+        personaje = personajes[indice_seleccionado]
+        personaje_texto = font.render(personaje.__name__, True, color)
+        window.blit(personaje_texto, (WIDTH // 2 - personaje_texto.get_width() // 2, HEIGHT - 50))
+        personaje_imagen = pygame.image.load("./imagenes/guy.png")
+        personaje_imagen = pygame.transform.scale(personaje_imagen, (64, 64))
+        window.blit(personaje_imagen, (WIDTH // 2 - personaje_imagen.get_width() // 2, HEIGHT // 2 - personaje_imagen.get_height() // 2))
+        pygame.display.flip()
+        clock.tick(60)
+
+
     # Actualizar temporizador
     tiempo = (pygame.time.get_ticks() - tiempo_inicio) // 100
 
@@ -190,9 +283,9 @@ while True:
     if keys[pygame.K_DOWN]:
         guy.mover("abajo")
         fondo_y -= 5
-    if keys[pygame.K_SPACE] and pygame.time.get_ticks() - ultimo_disparo_tiempo >= 500:  # cooldown de 500 milisegundos entre disparos
+    if keys[pygame.K_SPACE] and pygame.time.get_ticks() - cooldown >= 500:  # cooldown de 500 milisegundos entre disparos
         guy.disparar(enemigo)
-        ultimo_disparo_tiempo = pygame.time.get_ticks()
+        cooldown = pygame.time.get_ticks()
     
         
 

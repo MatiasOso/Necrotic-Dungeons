@@ -5,6 +5,9 @@ import tkinter as tk
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import tkinter as tk
+import subprocess
+
+
 
 uri = "mongodb+srv://matiasosores:XJLMzLTVcFYc7iCt@tienda.ietwuqs.mongodb.net/?retryWrites=true&w=majority"
 
@@ -67,7 +70,7 @@ XP = 9999
 
 #Debo crear la clase raza esta debe tener atributos como, nombre (de la raza), descripcion, imagen, HP, daño de ataque, velocidad
 # Y NO SÉ COMO BUSCO TUTORIAL NO HAY NADA AYUDA!!!!
-
+running = True
 def iniciar_sesion():
     # Función para guardar los datos en la base de datos
     def check_datos():
@@ -88,16 +91,15 @@ def iniciar_sesion():
             ventana.after(1000, ocultar_mensaje)
             ventana.after(2000, ventana.destroy)
             # validar el login
+            subprocess.Popen(["python", "experimento.py"])
             login = True
-            return login
+            # Destruir esta ventana
+            ventana.destroy()
             
 
+            
+            
 
-
-
-
-        
-        
         else:
             print("Inicio de sesión fallido")
             label5 = tk.Label(ventana, text="Error de contraseña o usuario")
@@ -154,7 +156,7 @@ def play_change_sound():
 
 
 # Bucle principal del juego
-running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
