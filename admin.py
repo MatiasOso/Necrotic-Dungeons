@@ -21,15 +21,51 @@ def conexion():
 db = conexion()
 
 def guardar_datos():
+    entry1 = tk.Entry(ventana)
+    entry1.grid(row=0, column=1)
+    entry2 = tk.Entry(ventana,)
+    entry2.grid(row=1, column=1)
+    entry3 = tk.Entry(ventana)
+    entry3.grid(row=2, column=1)
+    entry4 = tk.Entry(ventana, show="*")
+    entry4.grid(row=3, column=1)
+    gm = tk.Entry(ventana)
+    
+    
     nickname = entry1.get()
     correo = entry2.get()
     contrasena = entry3.get()
     confirmar_contrasena = entry4.get()
-    gm = gm_var.get()
+    gm = gm.get()
+    
 
     # Aquí puedes realizar las validaciones necesarias antes de guardar los datos
-
-    # Guardar los datos en la base de datos
+    if not nickname or not correo or not contrasena or not confirmar_contrasena or not gm:
+        messagebox.showerror("Error:", " Rellena los campos vacíos")
+        return
+    elif contrasena != confirmar_contrasena:
+        messagebox.showerror("Error:", "Las contraseñas no coinciden")
+        return
+    elif correo.find("@") == -1:
+        messagebox.showerror("Error:", "El correo no es válido")
+        return
+    else:
+        # Guardar los datos en la base de datos mongo
+        # Con el método insert_one guardamos un documento en la colección
+        documento = {
+            nickname: nickname,
+            correo: correo,
+            contrasena: contrasena,
+            confirmar_contrasena: confirmar_contrasena,
+            gm: gm
+        }
+    
+        
+    
+    
+    
+    
+    
     # ...
 
     messagebox.showinfo("Éxito", "Los datos se guardaron correctamente")

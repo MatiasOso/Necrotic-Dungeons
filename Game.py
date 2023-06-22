@@ -139,8 +139,8 @@ def iniciar_sesion():
 # Musica: https://www.youtube.com/watch?v=0ktyag1l3y8
 # Musica : https://www.youtube.com/watch?v=QVfoZQ-0A1M
 # Buscar como descargar musica de yotube quizas haga un porgrama que lo haga
-# pygame.mixer.music.load("cancion.mp3")
-# pygame.mixer.music.play(-1)  # Reproducir en bucle infinito
+pygame.mixer.music.load("totusflo.mp3")
+pygame.mixer.music.play(-1)  # Reproducir en bucle infinito
 
 # Función para verificar si el cursor está sobre el carrito de compra
 def is_cursor_on_cart():
@@ -161,6 +161,8 @@ def play_change_sound():
 # ------------------------------------------------- JUEGO ------------------------------------------------- #
 
 while running:
+    music = pygame.mixer.music.get_busy()
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -179,8 +181,7 @@ while running:
                         print("¡Iniciar sesion!")
                     elif selected_option == 1:
                         # Abrir el menú de opciones
-                        register = True
-                        # pygame.mixer.music.pause()  
+                        register = True 
                     elif selected_option == 2:
                         # Acción para la opción "Salir"
                         running = False
@@ -272,7 +273,7 @@ while running:
                     elif selected_option == 1:
                         # Acción para la opción "Volver"
                         register = False
-                        pygame.mixer.music.unpause()  # Reanudar la reproducción de la canción
+                          # Reanudar la reproducción de la canción
 
     # Dibujar la imagen de fondo
     window.blit(background_image, (0, 0))
