@@ -21,7 +21,6 @@ tiempo_inicio = pygame.time.get_ticks()
 # Cooldown del disparo
 cooldown = 0
 
-
 # Clase padre para los personajes
 class Personaje:
     def __init__(self, salud, ataque, velocidad_movimiento, velocidad_ataque):
