@@ -161,7 +161,6 @@ def play_change_sound():
 # ------------------------------------------------- JUEGO ------------------------------------------------- #
 
 while running:
-    music = pygame.mixer.music.get_busy()
     
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
