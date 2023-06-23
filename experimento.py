@@ -164,6 +164,25 @@ class elfo(Personaje):
         self.imagen_izquierda = imagen_izquierda
         self.imagen_derecha = imagen_derecha
         self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+    def dibujar(self, ventana):
+        if self.direccion == "izquierda":
+            ventana.blit(self.imagen_izquierda, (self.x, self.y))
+        else:
+            ventana.blit(self.imagen_derecha, (self.x, self.y))
+    def mover(self, direccion):
+        if direccion == "izquierda" and self.x > 0:
+            self.x -= self.velocidad_movimiento
+            self.direccion = "izquierda"
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
+            self.x += self.velocidad_movimiento
+            self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
+            
+            
+            
 class humano(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
         super().__init__(salud=300, ataque=10, velocidad_movimiento=5, velocidad_ataque=1)
@@ -173,6 +192,25 @@ class humano(Personaje):
         self.imagen_izquierda = imagen_izquierda
         self.imagen_derecha = imagen_derecha
         self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+    def dibujar(self, ventana):
+        if self.direccion == "izquierda":
+            ventana.blit(self.imagen_izquierda, (self.x, self.y))
+        else:
+            ventana.blit(self.imagen_derecha, (self.x, self.y))
+    def mover(self, direccion):
+        if direccion == "izquierda" and self.x > 0:
+            self.x -= self.velocidad_movimiento
+            self.direccion = "izquierda"
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
+            self.x += self.velocidad_movimiento
+            self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
+            
+            
+            
 class humana(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
         super().__init__(salud=250, ataque=12, velocidad_movimiento=6, velocidad_ataque=1.2)
@@ -182,6 +220,25 @@ class humana(Personaje):
         self.imagen_izquierda = imagen_izquierda
         self.imagen_derecha = imagen_derecha
         self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+    def dibujar(self, ventana):
+        if self.direccion == "izquierda":
+            ventana.blit(self.imagen_izquierda, (self.x, self.y))
+        else:
+            ventana.blit(self.imagen_derecha, (self.x, self.y))
+    def mover(self, direccion):
+        if direccion == "izquierda" and self.x > 0:
+            self.x -= self.velocidad_movimiento
+            self.direccion = "izquierda"
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
+            self.x += self.velocidad_movimiento
+            self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
+            
+            
+            
 class ogro(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
         super().__init__(salud=500, ataque=20, velocidad_movimiento=3, velocidad_ataque=1)
@@ -191,6 +248,25 @@ class ogro(Personaje):
         self.imagen_izquierda = imagen_izquierda
         self.imagen_derecha = imagen_derecha
         self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+    def dibujar(self, ventana):
+        if self.direccion == "izquierda":
+            ventana.blit(self.imagen_izquierda, (self.x, self.y))
+        else:
+            ventana.blit(self.imagen_derecha, (self.x, self.y))
+    def mover(self, direccion):
+        if direccion == "izquierda" and self.x > 0:
+            self.x -= self.velocidad_movimiento
+            self.direccion = "izquierda"
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
+            self.x += self.velocidad_movimiento
+            self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
+            
+            
+            
 class elfosc(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
         super().__init__(salud=180, ataque=18, velocidad_movimiento=8, velocidad_ataque=1.8)
@@ -200,6 +276,25 @@ class elfosc(Personaje):
         self.imagen_izquierda = imagen_izquierda
         self.imagen_derecha = imagen_derecha
         self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+    def dibujar(self, ventana):
+        if self.direccion == "izquierda":
+            ventana.blit(self.imagen_izquierda, (self.x, self.y))
+        else:
+            ventana.blit(self.imagen_derecha, (self.x, self.y))
+    def mover(self, direccion):
+        if direccion == "izquierda" and self.x > 0:
+            self.x -= self.velocidad_movimiento
+            self.direccion = "izquierda"
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
+            self.x += self.velocidad_movimiento
+            self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
+            
+            
+            
 class druida(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
         super().__init__(salud=220, ataque=14, velocidad_movimiento=6, velocidad_ataque=1.2)
@@ -209,14 +304,27 @@ class druida(Personaje):
         self.imagen_izquierda = imagen_izquierda
         self.imagen_derecha = imagen_derecha
         self.direccion = "izquierda"  # Inicialmente, mira hacia la izquierda
+    def dibujar(self, ventana):
+        if self.direccion == "izquierda":
+            ventana.blit(self.imagen_izquierda, (self.x, self.y))
+        else:
+            ventana.blit(self.imagen_derecha, (self.x, self.y))
+    def mover(self, direccion):
+        if direccion == "izquierda" and self.x > 0:
+            self.x -= self.velocidad_movimiento
+            self.direccion = "izquierda"
+        elif direccion == "derecha" and self.x < WIDTH - 64: 
+            self.x += self.velocidad_movimiento
+            self.direccion = "derecha"
+        elif direccion == "arriba" and self.y > 0:
+            self.y -= self.velocidad_movimiento
+        elif direccion == "abajo" and self.y < HEIGHT - 64:
+            self.y += self.velocidad_movimiento
 
 # array de personajes
 personajes = [elfo, humano, humana, ogro, elfosc, druida]
-
-
 selected = False
 indice_seleccionado = 0
-
 
 # Inicializar la ventana del juego
 window = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -229,6 +337,7 @@ enfriamiento = 200
 color = WHITE
 last_change = 0  # Variable para almacenar el tiempo del último cambio
 while True:
+
     while not selected:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -248,14 +357,21 @@ while True:
         current_time = pygame.time.get_ticks()
 
         window.fill(BLACK)
-        personaje = personajes[indice_seleccionado]
-        personaje_texto = font.render(personaje.__name__, True, color)
-        window.blit(personaje_texto, (WIDTH // 2 - personaje_texto.get_width() // 2, HEIGHT - 50))
-        personaje_imagen = pygame.image.load("./imagenes/guy.png")
-        personaje_imagen = pygame.transform.scale(personaje_imagen, (64, 64))
-        window.blit(personaje_imagen, (WIDTH // 2 - personaje_imagen.get_width() // 2, HEIGHT // 2 - personaje_imagen.get_height() // 2))
+        guy = personajes[indice_seleccionado]
+        guy_texto = font.render(guy.__name__, True, color)
+        window.blit(guy_texto, (WIDTH // 2 - guy_texto.get_width() // 2, HEIGHT - 50))
+        guy_imagen = pygame.image.load("./imagenes/guy.png")
+        guy_imagen = pygame.transform.scale(guy_imagen, (64, 64))
+        window.blit(guy_imagen, (WIDTH // 2 - guy_imagen.get_width() // 2, HEIGHT // 2 - guy_imagen.get_height() // 2))
         pygame.display.flip()
         clock.tick(60)
+        personaje_seleccionado = personajes[indice_seleccionado]
+        personaje_imagen_izquierda = pygame.image.load("./imagenes/guy.png")
+        personaje_imagen_izquierda = pygame.transform.scale(personaje_imagen_izquierda, (64, 64))
+        personaje_imagen_derecha = pygame.transform.flip(personaje_imagen_izquierda, True, False)
+        guy = personaje_seleccionado(x=WIDTH // 2, y=HEIGHT // 2, imagen_izquierda=personaje_imagen_izquierda, imagen_derecha=personaje_imagen_derecha)
+
+
 
 
     # Actualizar temporizador
