@@ -157,7 +157,7 @@ font = pygame.font.Font(font_path, font_size)
 
 class elfo(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
-        super().__init__(salud=200, ataque=15, velocidad_movimiento=7, velocidad_ataque=1.5)
+        super().__init__(salud=200, ataque=150, velocidad_movimiento=7, velocidad_ataque=1.5)
         self.x = x
         self.y = y
         self.imagen = ("imagenes/guy.png")
@@ -241,7 +241,7 @@ class humana(Personaje):
             
 class ogro(Personaje):
     def __init__(self, x, y, imagen_izquierda, imagen_derecha):
-        super().__init__(salud=500, ataque=20, velocidad_movimiento=3, velocidad_ataque=1)
+        super().__init__(salud=500, ataque=20, velocidad_movimiento=2, velocidad_ataque=1)
         self.x = x
         self.y = y
         self.imagen = ("imagenes/guy.png")
@@ -321,6 +321,10 @@ class druida(Personaje):
         elif direccion == "abajo" and self.y < HEIGHT - 64:
             self.y += self.velocidad_movimiento
 
+
+
+
+
 # array de personajes
 personajes = [elfo, humano, humana, ogro, elfosc, druida]
 selected = False
@@ -336,6 +340,9 @@ enfriamiento = 200
 
 color = WHITE
 last_change = 0  # Variable para almacenar el tiempo del último cambio
+
+
+nivel_enemigos = 1
 while True:
 
     while not selected:
@@ -412,11 +419,24 @@ while True:
 
     # Movimiento del enemigo
     enemigo.mover(guy)
-
+     
     # Colisión del enemigo con el personaje principal
     if math.sqrt((guy.x - enemigo.x) ** 2 + (guy.y - enemigo.y) ** 2) < 32:
-        guy.recibir_dano(enemigo.ataque)
+        guy.recibir_dano(enemigo.ataque)      
+        if enemigo.salud <= 0:
+            # Destruir enemigo actual
+            enemigo = None
+            
+            nivel_enemigos += 1
+            nueva_velocidad = enemigo.velocidad_movimiento + 1  # Aumentar la velocidad del enemigo
+            nueva_salud = enemigo.salud_maxima + 100  # Aumentar la salud del enemigo
+            nuevo_ataque = enemigo.ataque + 2  # Aumentar el ataque del enemigo
 
+            # Crear un nuevo enemigo con las características actualizadas
+            enemigo = Enemigo(x=100, y=100, imagen=enemigo_imagen, velocidad=nueva_velocidad)
+            enemigo.salud = nueva_salud
+            enemigo.salud_maxima = nueva_salud
+            enemigo.ataque = nuevo_ataque
     # Movimiento de las balas
     guy.mover_balas()
 
@@ -438,6 +458,11 @@ while True:
         for y in range(fondo_y % HEIGHT - HEIGHT, HEIGHT, HEIGHT):
             window.blit(fondo, (x, y))
     tiempo_texto = font.render("Time " + str(tiempo), True, color)
+    
+    # Eliminar enemigo si su vida es menor o igual a 0 e invocar otro más fuerte
+    
+        
+        
     
     window.blit(tiempo_texto, (300, 10))
     guy.dibujar(window)
