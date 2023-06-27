@@ -66,9 +66,8 @@ menu_options = ["Iniciar sesion", "Registrarse", "Salir"]
 selected_option = 0
  #Nickname,correo,contraseña, confirmar contraseña
 # dinero y experiencia
-money = 9999
-XP = 9999
 
+cart_enabled = False
 #Debo crear la clase raza esta debe tener atributos como, nombre (de la raza), descripcion, imagen, HP, daño de ataque, velocidad
 # Y NO SÉ COMO BUSCO TUTORIAL NO HAY NADA AYUDA!!!!
 running = True
@@ -94,6 +93,9 @@ def iniciar_sesion():
             # validar el login
             subprocess.Popen(["python", "experimento.py"])
             login = True
+            if login = True:
+                # Habilitar carrito de compra
+                cart_enabled = True
             # Destruir esta ventana
             ventana.destroy()
             
@@ -203,35 +205,43 @@ while running:
                                 correo = entry2.get()
                                 contraseña = entry3.get()
                                 confirmar_contraseña = entry4.get()
+                                # verify that the nickname is not repeated
+                                for documento in db.Usuarios.find():
+                                    if nickname == documento["Nickname"]:
+                                        print("El nickname ya existe")
+                                        label5 = tk.Label(ventana, text="El nickname ya existe")
+                                        label5.grid(row=5, column=1)
+                                        ventana.after(1000, ocultar_mensaje)
+                                        return #DONE
+                                    else:
+                                        if contraseña == confirmar_contraseña:
+                                            documentos = {
+                                                "Nickname": nickname,
+                                                "Correo": correo,
+                                                "Contraseña": contraseña,
+                                                "Confirmar contraseña": confirmar_contraseña,
+                                                "es_gm": False
+                                            }
+                                        for documento in db.Usuarios.find():
+                                                if nickname == documento["Nickname"]:
+                                                    print("El nickname ya existe")
+                                                    label5 = tk.Label(ventana, text="El nickname ya existe")
+                                                    label5.grid(row=5, column=1)
+                                                    ventana.after(1000, ocultar_mensaje)
+                                                    return
+                                                else:
+                                                    db.Usuarios.insert_one(documentos)
+                                                    label5 = tk.Label(ventana, text="Registro exitoso")
+                                                    label5.grid(row=5, column=1)
+                                                    boton.config(state=tk.DISABLED)
+                                                    ventana.after(1000, ocultar_mensaje)
+                                                    ventana.after(2000, ventana.destroy)  
 
-                                if contraseña == confirmar_contraseña:
-                                    documentos = {
-                                        "Nickname": nickname,
-                                        "Correo": correo,
-                                        "Contraseña": contraseña,
-                                        "Confirmar contraseña": confirmar_contraseña,
-                                        "es_gm": False
-                                    }
-                                    for documento in db.Usuarios.find():
-                                        if nickname == documento["Nickname"]:
-                                            print("El nickname ya existe")
-                                            label5 = tk.Label(ventana, text="El nickname ya existe")
-                                            label5.grid(row=5, column=1)
-                                            ventana.after(1000, ocultar_mensaje)
-                                            return
                                         else:
-                                            db.Usuarios.insert_one(documentos)
-                                            label5 = tk.Label(ventana, text="Registro exitoso")
+                                            print("Las contraseñas no coinciden")
+                                            label5 = tk.Label(ventana, text="Las contraseñas no coinciden")
                                             label5.grid(row=5, column=1)
-                                            boton.config(state=tk.DISABLED)
-                                            ventana.after(1000, ocultar_mensaje)
-                                            ventana.after(2000, ventana.destroy)  
-
-                                else:
-                                    print("Las contraseñas no coinciden")
-                                    label5 = tk.Label(ventana, text="Las contraseñas no coinciden")
-                                    label5.grid(row=5, column=1)
-                                    ventana.after(1000, ocultar_mensaje)  
+                                            ventana.after(1000, ocultar_mensaje)  
 
                             # Función para ocultar el mensaje
                             def ocultar_mensaje():
