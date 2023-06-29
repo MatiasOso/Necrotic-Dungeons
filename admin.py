@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from bson.objectid import ObjectId
 
 uri = "mongodb+srv://matiasosores:XJLMzLTVcFYc7iCt@tienda.ietwuqs.mongodb.net/?retryWrites=true&w=majority"
 
@@ -58,11 +59,11 @@ def viewUsers():
         usuarios_text.insert(tk.END, f"GM: {usuario['es_gm']}\n")
         
         # Botón Modificar
-        modificar_button = ttk.Button(frame, text="Modificar")#, command=lambda u=usuario: modificarUsuario(u))
-        modificar_button.pack(side=tk.LEFT, padx=5)
+        modificar_button = ttk.Button(frame, text="Modificar", command=lambda u=usuario: editarUsuario(u))
+        modificar_button.pack(side=tk.LEFT)
         
         # Botón Eliminar
-        eliminar_button = ttk.Button(frame, text="Eliminar")#, command=lambda u=usuario: eliminarUsuario(u))
+        eliminar_button = ttk.Button(frame, text="Eliminar", command=lambda u=usuario: eliminarUsuario(u))
         eliminar_button.pack(side=tk.LEFT)
 
     usuarios_text.configure(state="disabled")
@@ -73,7 +74,65 @@ def viewUsers():
     
     ventana_usuarios.bind("<MouseWheel>", on_mousewheel)
 
+# ------------------------------ editar usuario ---------------------------------#
+def editarUsuario(usuario):
+    def guardarCambios():
+        # Obtener los nuevos valores ingresados en los Entry
+        nuevo_nickname = entry1.get()
+        nuevo_correo = entry2.get()
+        nuevo_contraseña = entry3.get()
+        nuevo_es_gm = gm_var.get()
 
+        # Actualizar los datos del usuario en la base de datos
+        db = conexion()
+        usuarios_collection = db['Usuarios']
+        usuarios_collection.update_one(
+            {'_id': usuario['_id']},
+            {'$set': {'Nickname': nuevo_nickname, 'Correo': nuevo_correo, 'Contraseña': nuevo_contraseña, 'es_gm': nuevo_es_gm}}
+        )
+        ventana_editar.destroy()  # Cerrar la ventana de edición
+
+    ventana_editar = tk.Toplevel()
+    ventana_editar.title("Editar Usuario")
+
+    # Crear los labels
+    label1 = tk.Label(ventana_editar, text="Nickname")
+    label1.grid(row=0, column=0)
+    label2 = tk.Label(ventana_editar, text="Correo")
+    label2.grid(row=1, column=0)
+    label3 = tk.Label(ventana_editar, text="Contraseña")
+    label3.grid(row=2, column=0)
+    label4 = tk.Label(ventana_editar, text="Es Game Master")
+    label4.grid(row=3, column=0)
+
+    # Crear los Entry y asignar los valores actuales del usuario
+    entry1 = tk.Entry(ventana_editar)
+    entry1.insert(tk.END, usuario['Nickname'])
+    entry1.grid(row=0, column=1)
+    entry2 = tk.Entry(ventana_editar)
+    entry2.insert(tk.END, usuario['Correo'])
+    entry2.grid(row=1, column=1)
+    entry3 = tk.Entry(ventana_editar)
+    entry3.insert(tk.END, usuario['Contraseña'])
+    entry3.grid(row=2, column=1)
+
+    # Crear el Checkbutton para seleccionar si es GM o no
+    gm_var = tk.BooleanVar(value=usuario['es_gm'])  # Variable para almacenar el valor del Checkbutton
+    gm_checkbutton = tk.Checkbutton(ventana_editar, variable=gm_var)
+    gm_checkbutton.grid(row=3, column=1)
+
+    # Crear el botón de guardar cambios
+    boton_guardar = tk.Button(ventana_editar, text="Guardar", command=guardarCambios)
+    boton_guardar.grid(row=4, column=0, columnspan=2)
+
+    
+#------------------------------ eliminar usuario ------------------------------# 
+def eliminarUsuario(usuario):
+    db = conexion()
+    usuarios_collection = db['Usuarios']
+    usuarios_collection.delete_one({'_id': usuario['_id']})
+    print("Usuario eliminado")
+    
     
     
 #------------------------------ CREATE GAMEMASTER ------------------------------#
@@ -86,15 +145,16 @@ def createGameMaster():
         correo = entry2.get()
         contraseña = entry3.get()
         confirmar_contraseña = entry4.get()
-        es_gm = gm_var.get()  # Obtener el valor del Checkbutton
+        es_gm = bool(gm_var.get())  # Obtener el valor del Checkbutton
 
         if contraseña == confirmar_contraseña:
             documentos = {
+                "_id":  ObjectId(),
                 "Nickname": nickname,
                 "Correo": correo,
                 "Contraseña": contraseña,
                 "Confirmar contraseña": confirmar_contraseña,
-                "es_gm": es_gm  # Obtener el valor booleano del Checkbutton
+                "es_gm": bool(es_gm) # Obtener el valor booleano del Checkbutton
             }
             for documento in db.Usuarios.find():
                 if nickname == documento["Nickname"]:
@@ -111,12 +171,26 @@ def createGameMaster():
                     ventana.after(1000, ocultar_mensaje)
                     ventana.after(2000, ventana.destroy)  
 
-        else:
+        elif contraseña != confirmar_contraseña:
             print("Las contraseñas no coinciden")
             label5 = tk.Label(ventana, text="Las contraseñas no coinciden")
             label5.grid(row=5, column=1)
             ventana.after(1000, ocultar_mensaje)
+            return
 
+    def verificar_campos():
+        nickname = entry1.get()
+        correo = entry2.get()
+        contraseña = entry3.get()
+        confirmar_contraseña = entry4.get()
+
+        if nickname and correo and contraseña and confirmar_contraseña:
+            guardar_datos()
+        else:
+            label6 = tk.Label(ventana, text="Por favor, complete todos los campos.")
+            label6.grid(row=6, column=1)
+            # eliminar despues de 1 segundo
+            label6.after(1000, label6.destroy)
     # Función para ocultar el mensaje
     def ocultar_mensaje():
         label5.grid_remove()
@@ -149,12 +223,15 @@ def createGameMaster():
     entry4.grid(row=3, column=1)  
     
     # Crear el Checkbutton para seleccionar si es GM o no
-    gm_var = tk.BooleanVar()  # Variable para almacenar el valor del Checkbutton
+    gm_var = tk.IntVar()  # Variable para almacenar el valor del Checkbutton
     gm_checkbutton = tk.Checkbutton(ventana, text="Es GM", variable=gm_var)
     gm_checkbutton.grid(row=4, column=1)
 
+    
+
+
     # Crear el botón de registro
-    boton = tk.Button(ventana, text="Registrarse", command=guardar_datos)
+    boton = tk.Button(ventana, text="Registrarse", command=verificar_campos)
     boton.grid(row=5, column=1)
 
     ventana.mainloop()
@@ -179,3 +256,5 @@ def mainWindow():
     window.mainloop()
 
 mainWindow()
+
+# HASTA AQUI VA BIEN TAN SOLO FALTARIA ARREGLAR LO DE SI EL USUARIOS ES GM O NO AL MOMENTO DE REGISTRARSE

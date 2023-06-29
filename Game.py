@@ -81,10 +81,13 @@ def iniciar_sesion():
 
         documentos = {
             "Nickname": Nickname,
-            "Contraseña": Contraseña,
+            "Contraseña": Contraseña
         }
         login = False
-        if db.Usuarios.find_one(documentos):
+        if Nickname == 'admin' and Contraseña == 'admin':
+            # Abrir el programa admin.py
+            subprocess.Popen(["python", "admin.py"])
+        elif db.Usuarios.find_one(documentos):
             print("Inicio de sesión exitoso")
             label5 = tk.Label(ventana, text="Inicio de sesión exitoso")
             label5.grid(row=5, column=1)
@@ -96,11 +99,6 @@ def iniciar_sesion():
             login = True
             # Destruir esta ventana
             ventana.destroy()
-            
-
-            
-            
-
         else:
             print("Inicio de sesión fallido")
             label5 = tk.Label(ventana, text="Error de contraseña o usuario")
@@ -139,8 +137,8 @@ def iniciar_sesion():
 # Musica: https://www.youtube.com/watch?v=0ktyag1l3y8
 # Musica : https://www.youtube.com/watch?v=QVfoZQ-0A1M
 # Buscar como descargar musica de yotube quizas haga un porgrama que lo haga
-pygame.mixer.music.load("totusflo.mp3")
-pygame.mixer.music.play(-1)  # Reproducir en bucle infinito
+# pygame.mixer.music.load("totusflo.mp3")
+# pygame.mixer.music.play(-1)   Reproducir en bucle infinito
 
 # Función para verificar si el cursor está sobre el carrito de compra
 def is_cursor_on_cart():
@@ -249,7 +247,8 @@ while running:
                             label2.grid(row=1, column=0)
                             label3 = tk.Label(ventana, text="Contraseña")
                             label3.grid(row=2, column=0)
-
+                            label3 = tk.Label(ventana, text="RepitaContraseña")
+                            label3.grid(row=3, column=0)
                             # Crear los entrys
                             entry1 = tk.Entry(ventana)
                             entry1.grid(row=0, column=1)
@@ -304,3 +303,6 @@ while running:
 
 # Cerrar Pygame al salir del juego
 pygame.quit()
+
+
+# --------------------ADMIN EVENTS ----------------------------- # Esto quizas deberia ir más arriba ¯\_(ツ)_/¯
