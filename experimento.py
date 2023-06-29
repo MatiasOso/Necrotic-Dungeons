@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+import random
 
 pygame.init()
 
@@ -60,6 +61,8 @@ class Personaje:
     def dibujar_balas(self, ventana):
         for bala in self.balas:
             bala.dibujar(ventana)
+    money = 0
+    XP = 0
 
 # Subclase para el personaje principal ("guy")
 class Guy(Personaje):
@@ -98,6 +101,10 @@ class Enemigo(Personaje):
         self.x = x
         self.y = y
         self.imagen = imagen
+        listaEnemys = []
+        if self.salud == 0:
+            listaEnemys.remove(self)
+            
 
     def mover(self, objetivo):
         dx = objetivo.x - self.x
@@ -112,6 +119,19 @@ class Enemigo(Personaje):
 
     def dibujar(self, ventana):
         ventana.blit(self.imagen, (self.x, self.y))
+    def remove():
+        enemigo.remove(enemigo)
+    
+    # spawn new enemy is salud == 0
+
+    
+    
+    
+        
+        
+        
+        
+
 
 # Clase para las balas
 class Bala:
@@ -180,6 +200,7 @@ class elfo(Personaje):
             self.y -= self.velocidad_movimiento
         elif direccion == "abajo" and self.y < HEIGHT - 64:
             self.y += self.velocidad_movimiento
+
             
             
             
@@ -341,6 +362,7 @@ enfriamiento = 200
 color = WHITE
 last_change = 0  # Variable para almacenar el tiempo del último cambio
 
+dash_cooldown = 0
 
 nivel_enemigos = 1
 while True:
@@ -408,6 +430,22 @@ while True:
     if keys[pygame.K_SPACE] and pygame.time.get_ticks() - cooldown >= 500:  # cooldown de 500 milisegundos entre disparos
         guy.disparar(enemigo)
         cooldown = pygame.time.get_ticks()
+    if keys[pygame.K_q] and pygame.time.get_ticks() - dash_cooldown >= 3000:
+        # dash hacia la izquierda
+        guy.x -= 100
+        dash_cooldown = pygame.time.get_ticks()
+    if keys[pygame.K_r] and pygame.time.get_ticks() - dash_cooldown >= 3000:
+        # dash hacia la derecha
+        guy.x += 100
+        dash_cooldown = pygame.time.get_ticks()
+    if keys[pygame.K_w] and pygame.time.get_ticks() - dash_cooldown >= 3000:
+        # dash hacia arriba
+        guy.y -= 100
+        dash_cooldown = pygame.time.get_ticks()
+    if keys[pygame.K_e] and pygame.time.get_ticks() - dash_cooldown >= 3000:
+        guy.y += 100
+        dash_cooldown = pygame.time.get_ticks()
+        
     
         
 
@@ -423,20 +461,13 @@ while True:
     # Colisión del enemigo con el personaje principal
     if math.sqrt((guy.x - enemigo.x) ** 2 + (guy.y - enemigo.y) ** 2) < 32:
         guy.recibir_dano(enemigo.ataque)      
-        if enemigo.salud <= 0:
-            # Destruir enemigo actual
-            enemigo = None
+    #     if enemigo.salud <= 0:
+    #         # Destruir enemigo actual
             
-            nivel_enemigos += 1
-            nueva_velocidad = enemigo.velocidad_movimiento + 1  # Aumentar la velocidad del enemigo
-            nueva_salud = enemigo.salud_maxima + 100  # Aumentar la salud del enemigo
-            nuevo_ataque = enemigo.ataque + 2  # Aumentar el ataque del enemigo
-
-            # Crear un nuevo enemigo con las características actualizadas
-            enemigo = Enemigo(x=100, y=100, imagen=enemigo_imagen, velocidad=nueva_velocidad)
-            enemigo.salud = nueva_salud
-            enemigo.salud_maxima = nueva_salud
-            enemigo.ataque = nuevo_ataque
+    if enemigo.salud <= 0:
+        enemigo.spawnNew()
+        money += 100
+        XP += 100
     # Movimiento de las balas
     guy.mover_balas()
 
@@ -460,9 +491,23 @@ while True:
     tiempo_texto = font.render("Time " + str(tiempo), True, color)
     
     # Eliminar enemigo si su vida es menor o igual a 0 e invocar otro más fuerte
+    # if enemigo.salud <= 0:
+    #     enemigo = Enemigo(x=100, y=100, imagen=enemigo_imagen, velocidad=nueva_velocidad)
+    #     enemigo.salud = nueva_salud
+    #     enemigo.salud_maxima = nueva_salud
+    #     enemigo.ataque = nuevo_ataque
+    #     money += 100
+    #     XP += 100
+        
+        
+        
+    # circulo para cooldown de dash
+    pygame.draw.circle(window, WHITE, (WIDTH - 50, 50), 25) 
+    pygame.draw.arc(window, ROJO, (WIDTH - 50, 50, 25, 25), 0, dash_cooldown / 3000 * 2 * math.pi, 2)
     
-        
-        
+    # circulo para cooldown de disparo
+    pygame.draw.circle(window, WHITE, (WIDTH - 50, 100), 25) 
+    pygame.draw.arc(window, ROJO, (WIDTH - 50, 100, 25, 25), 0, cooldown / 500 * 2 * math.pi, 2)
     
     window.blit(tiempo_texto, (300, 10))
     guy.dibujar(window)
@@ -470,7 +515,10 @@ while True:
     enemigo.dibujar(window)
     enemigo.ver_vida(window)
     guy.dibujar_balas(window)
-
+    money = font.render("Money " + str(guy.money), True, PLATA)
+    window.blit(money, (10, 10))
+    XP = font.render("XP " + str(guy.XP), True, WHITE)
+    window.blit(XP, (10, 40))
     pygame.display.flip()
     clock.tick(60)
 # HASTA AQUI VA BIEN
