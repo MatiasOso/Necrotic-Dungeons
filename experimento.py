@@ -97,10 +97,11 @@ class Guy(Personaje):
 # Subclase para los enemigos
 class Enemigo(Personaje):
     def __init__(self, x, y, imagen, velocidad):
-        super().__init__(salud=300, ataque=5, velocidad_movimiento=velocidad, velocidad_ataque=0.5)
+        super().__init__(salud=300, ataque=2, velocidad_movimiento=velocidad, velocidad_ataque=0.5)
         self.x = x
         self.y = y
         self.imagen = imagen
+        self.salud = 300
         listaEnemys = []
         if self.salud == 0:
             listaEnemys.remove(self)
@@ -121,6 +122,18 @@ class Enemigo(Personaje):
         ventana.blit(self.imagen, (self.x, self.y))
     def remove():
         enemigo.remove(enemigo)
+    def spawnNew(self):
+        if self.salud == 0:
+            self.x = random.randint(0, 800)
+            self.y = random.randint(0, 600)
+            self.salud = self.salud + 150
+            self.ataque = self.ataque + 0.1
+            self.velocidad_movimiento = self.velocidad_movimiento + 0.001
+            self.velocidad_ataque = 0.5
+            self.imagen = pygame.image.load("./imagenes/guy.png")
+            self.imagen = pygame.transform.scale(self.imagen, (64, 64))
+            self.imagen = pygame.transform.flip(self.imagen, True, False)
+            # detectar si el personaje esta a la derecha o izquierda del enemigo
     
     # spawn new enemy is salud == 0
 
@@ -466,8 +479,10 @@ while True:
             
     if enemigo.salud <= 0:
         enemigo.spawnNew()
-        money += 100
-        XP += 100
+        enemigo.salud += 100
+        enemigo.ataque += 10
+        enemigo.velocidad_movimiento += 1
+
     # Movimiento de las balas
     guy.mover_balas()
 
@@ -490,24 +505,8 @@ while True:
             window.blit(fondo, (x, y))
     tiempo_texto = font.render("Time " + str(tiempo), True, color)
     
-    # Eliminar enemigo si su vida es menor o igual a 0 e invocar otro más fuerte
-    # if enemigo.salud <= 0:
-    #     enemigo = Enemigo(x=100, y=100, imagen=enemigo_imagen, velocidad=nueva_velocidad)
-    #     enemigo.salud = nueva_salud
-    #     enemigo.salud_maxima = nueva_salud
-    #     enemigo.ataque = nuevo_ataque
-    #     money += 100
-    #     XP += 100
+
         
-        
-        
-    # circulo para cooldown de dash
-    pygame.draw.circle(window, WHITE, (WIDTH - 50, 50), 25) 
-    pygame.draw.arc(window, ROJO, (WIDTH - 50, 50, 25, 25), 0, dash_cooldown / 3000 * 2 * math.pi, 2)
-    
-    # circulo para cooldown de disparo
-    pygame.draw.circle(window, WHITE, (WIDTH - 50, 100), 25) 
-    pygame.draw.arc(window, ROJO, (WIDTH - 50, 100, 25, 25), 0, cooldown / 500 * 2 * math.pi, 2)
     
     window.blit(tiempo_texto, (300, 10))
     guy.dibujar(window)

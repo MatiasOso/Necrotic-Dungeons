@@ -96,7 +96,7 @@ def iniciar_sesion():
             # validar el login
             subprocess.Popen(["python", "experimento.py"])
             login = True
-            if login = True:
+            if login == True:
                 # Habilitar carrito de compra
                 cart_enabled = True
             # Destruir esta ventana
